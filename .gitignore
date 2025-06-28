@@ -130,6 +130,9 @@ ENV/
 env.bak/
 venv.bak/
 
+# files not part of dashboard project
+test.py
+
 # Spyder project settings
 .spyderproject
 .spyproject
