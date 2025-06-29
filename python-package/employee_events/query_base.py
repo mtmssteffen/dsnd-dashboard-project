@@ -58,11 +58,11 @@ class QueryBase():
         # so the query returns the notes
         # for the table name in the `name` class attribute
         query = f'''
-                    SELECT note_dat,
+                    SELECT note_date,
                            note
-                    FROM {self.name}
+                    FROM notes
                     JOIN employee_events USING({self.name}_id)
-                    WHERE {self.name}.{self.name}_id = {id}
+                    WHERE employee_events.{self.name}_id = {id}
                     '''
         return query
 

@@ -133,6 +133,9 @@ venv.bak/
 # files not part of dashboard project
 test.py
 
+# fasthtml session keys
+.sesskey
+
 # Spyder project settings
 .spyderproject
 .spyproject

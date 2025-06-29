@@ -36,7 +36,7 @@ class ReportDropdown(Dropdown):
         
         # Return the output from the
         # parent class's build_component method
-        return super().build_component()
+        return super().build_component(entity_id, model)
     
     # Overwrite the `component_data` method
     # Ensure the method uses the same parameters
@@ -106,7 +106,7 @@ class LineChart(MatplotlibViz):
         
         # call the .plot method for the
         # cumulative counts dataframe
-        ecounts.plot(ax=ax, title=model.username(entity_id),ylabel='Cumulative Events')
+        ecounts.plot(ax=ax)
         
         # pass the axis variable
         # to the `.set_axis_styling`
@@ -118,7 +118,7 @@ class LineChart(MatplotlibViz):
         self.set_axis_styling(ax, bordercolor='black', fontcolor='black')
         
         # Set title and labels for x and y axis
-        #### YOUR CODE HERE
+        ax.set_title(model.name, fontsize=20)
 
 
 # Create a subclass of base_components/MatplotlibViz
@@ -142,7 +142,7 @@ class BarChart(MatplotlibViz):
         
         # Using the predictor class attribute
         # pass the data to the `predict_proba` method
-        prediction = predictor.predict_proba(mdata)
+        prediction = self.predictor.predict_proba(mdata)
         
         # Index the second column of predict_proba output
         # The shape should be (<number of records>, 1)
@@ -155,16 +155,16 @@ class BarChart(MatplotlibViz):
         # If the model's name attribute is "team"
         # We want to visualize the mean of the predict_proba output
         if model.name == 'team':
-            pred = prediction.[:, :1].mean()
+            pred = prediction[:, :1].mean()
             
         # Otherwise set `pred` to the first value
         # of the predict_proba output
         else:
-            pred = prediction.[:, :1
+            pred = prediction[:, :1][0][0]
         
         # Initialize a matplotlib subplot
         fig, ax = plt.subplots()
-        
+        print("***===>>>  this is the pred value " + str(pred))
         # Run the following code unchanged
         ax.barh([''], [pred])
         ax.set_xlim(0, 1)
@@ -183,7 +183,9 @@ class Visualizations(CombinedComponent):
     # class attribute to a list
     # containing an initialized
     # instance of `LineChart` and `BarChart`
-    children = ['LineChart','BarChart']
+    linechart = LineChart()
+    bardchart = BarChart()
+    children = [linechart,bardchart]
 
     # Leave this line unchanged
     outer_div_type = Div(cls='grid')
@@ -222,7 +224,7 @@ class DashboardFilters(FormGroup):
     
 # Create a subclass of CombinedComponents
 # called `Report`
-class Report(CombinedComponents):
+class Report(CombinedComponent):
 
     # Set the `children`
     # class attribute to a list
@@ -233,7 +235,7 @@ class Report(CombinedComponents):
     dashfilters = DashboardFilters()
     dataviz = Visualizations()
     notes = NotesTable()
-    children = ['header','dashfilters','dataviz','notes']
+    children = [header,dashfilters,dataviz,notes]
 
 # Initialize a fasthtml app 
 app, route = fast_app()
